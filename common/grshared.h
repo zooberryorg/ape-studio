@@ -5,6 +5,13 @@
 
 namespace GrShared {
 
+struct SubtypeDef {
+    QString prefix;
+    QString label;
+};
+
+using SubtypeList = QVector<SubtypeDef>;
+
 enum PropertyGroup {
     ID, // name, era, helpid, project name
     Prey, // cPrey list
@@ -44,7 +51,8 @@ struct Value {
 
 using Key = QHash<QString, Value>;
 using Section = QHash<QString, Key>;
-using Config = QList<Section*>;
+using SubtypeSections = QHash<QString, Section>;
+using Config = std::vector<SubtypeSections*>;
 
 enum AssetTypes {
     Scenery,

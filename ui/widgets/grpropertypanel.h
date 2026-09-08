@@ -8,18 +8,21 @@
 class GrAsset;
 class QVBoxLayout;
 class GrLangTableBrowser;
+class QTabWidget;
+class QScrollArea;
 
 class GrPropertyPanel : public QWidget
 {
     Q_OBJECT
 public:
     explicit GrPropertyPanel(QWidget *parent = nullptr, GrShared::PropertyGroup = GrShared::PropertyGroup::Misc);
-    void loadAsset(GrAsset* asset);
+    void loadAsset(GrAsset* asset, const QString& subtype = "");
     void applyToAsset();
     QWidget* createField(QWidget* parent, const QString& section, const QString& key, const GrShared::Value& value);
     GrShared::PropertyGroup group() { return m_group; };
     void setLangBrowserSource(GrLangTableBrowser* source) { m_langBrowserSource = source; };
-
+    void setTabWidget(QTabWidget *);
+    static GrPropertyPanel* buildPanelForAsset(GrAsset* asset, GrShared::PropertyGroup group, QWidget* parent = nullptr);
 private:
     struct Field {
         QString section;
@@ -32,6 +35,9 @@ private:
     QVBoxLayout* m_layout;
     GrShared::PropertyGroup m_group;
     GrLangTableBrowser* m_langBrowserSource;
+    QTabWidget* m_tabs = nullptr;
+    QScrollArea* m_scrollArea = nullptr;
+    QWidget* m_scrollContent = nullptr;
 };
 
 #endif // GRPROPERTYPANEL_H

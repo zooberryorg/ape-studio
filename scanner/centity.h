@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include "grasset.h"
+#include "grshared.h"
 
 class CEntity : public GrAsset
 {

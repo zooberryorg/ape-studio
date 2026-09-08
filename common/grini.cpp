@@ -3,6 +3,15 @@
 #include <QTextStream>
 #include <QVariant>
 
+QString GrINI::buildSectionName(const QString &prefix, const QString &sectionName)
+{
+    if ( prefix.isEmpty() ) {
+        return sectionName;
+    } else {
+        return prefix + '/' + sectionName;
+    }
+}
+
 QHash<QString, QString> GrINI::getKeyValuesInSection(const CSimpleIniA& ini, QString section)
 {
     CSimpleIniA::TNamesDepend memberKeys;
@@ -15,19 +24,6 @@ QHash<QString, QString> GrINI::getKeyValuesInSection(const CSimpleIniA& ini, QSt
     }
 
     return pairs;
-}
-
-void GrINI::assignNewValuesToKeys(QHash<QString, QHash<QString, Value>>& target, const QHash<QString, QString>& input) {
-    if ( target.isEmpty() ) {
-        // TODO: handle error
-        return;
-    }
-    QString section = target.begin().key();
-    for (const auto& key : input.keys()) {
-        if ( target[section].contains(key) ) {
-            target[section][key].v = input.value(key);
-        }
-    }
 }
 
 QStringList GrINI::getFlagsInSection(const QString& path, const QString& section)
@@ -88,17 +84,34 @@ bool GrINI::doesKeyInSectionExist(const CSimpleIniA& ini, const QString& section
     return false;
 }
 
-void GrINI::loadConfig(const CSimpleIniA& ini, GrShared::Config sections)
+void GrINI::assignNewValuesToKeys(GrShared::Key& target, const QHash<QString, QString>& input)
 {
-    for (auto* s : sections )
-    {
-        if ( s->isEmpty() ) continue;
+    if (target.isEmpty())
+        return;
 
-        QString sectionName = s->begin().key();
-        GrINI::assignNewValuesToKeys(
-            *s,
-            GrINI::getKeyValuesInSection(ini, sectionName)
-        );
+    for (auto it = input.constBegin(); it != input.constEnd(); ++it) {
+        if (target.contains(it.key())) {
+            target[it.key()].v = it.value();
+        }
+    }
+}
+
+void GrINI::loadConfig(const CSimpleIniA& ini, GrShared::Config config)
+{
+    for (GrShared::SubtypeSections* field : config) {
+        if (!field)
+            continue;
+
+        for (auto subtypeIt = field->begin(); subtypeIt != field->end(); ++subtypeIt) {
+            GrShared::Section& section = subtypeIt.value();
+
+            for (auto sectionIt = section.begin(); sectionIt != section.end(); ++sectionIt) {
+                const QString& sectionName = sectionIt.key();
+                GrShared::Key& keyMap = sectionIt.value();
+
+                assignNewValuesToKeys(keyMap, getKeyValuesInSection(ini, sectionName));
+            }
+        }
     }
 }
 
@@ -112,4 +125,17 @@ QVariant GrINI::stringToBool(const QString &b)
     }
 
     return QVariant();
+}
+
+// takes all pre-registered INI sections and adds any subtypes that exist
+void GrINI::registerSubtypes(QHash<QString, GrShared::Section>& target, const SectionTemplate& tmpl, const GrShared::SubtypeList& subtypes)
+{
+    for (const auto& sub : subtypes) {
+
+        const QString sectionName = buildSectionName(sub.prefix, tmpl.sectionName);
+
+        for (auto it = tmpl.properties.constBegin(); it != tmpl.properties.constEnd(); ++it) {
+            target[sub.prefix][sectionName][it.key()] = it.value();
+        }
+    }
 }

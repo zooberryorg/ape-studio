@@ -7,45 +7,72 @@ CBuilding::CBuilding(QString path)
     m_type = AssetType::Building;
     initMembers();
     initCharInts();
+    initCharFloats();
 }
-
 
 void CBuilding::initMembers () {
     m_members.clear();
     m_members.append("structures");
 }
 
+GrShared::Config CBuilding::allSections()
+{
+    return {
+        &m_globals,
+        &m_icon,
+        &m_intchars,
+        &m_floatchars,
+        &m_animations,
+    };
+}
+
+
 void CBuilding::initCharInts() {
-    m_intchars[charInts]["cCapacity"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cToySatisfaction"] = { "", Group::Needs, Widget::Integer };
-    m_intchars[charInts]["cTimeInside"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cDefaultCost"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cLowCost"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cMedCost"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cHighCost"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cPriceFactor"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cUpkeep"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cHideUser"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cSetLetterFacing"] = { "", Group::UI, Widget::Integer };
-    m_intchars[charInts]["cDrawUser"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cHideCostChange"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cHideCommerceInfo"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cHideRegularInfo"] = { "", Group::Commerce, Widget::Float };
-    m_intchars[charInts]["cHoldsOntoUser"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cUserTracker"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cIdler"] = { "", Group::Traits, Widget::Integer };
-    m_intchars[charInts]["cExhibitViewer"] = { "", Group::Exhibit, Widget::Integer };
-    m_intchars[charInts]["cAlternatePanelTitle"] = { "", Group::UI, Widget::Integer };
-    m_intchars[charInts]["cDirectEntrance"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cHideBuilding"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cUserStaysOutside"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cUserTeleportsInside"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cUserUsesExit"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cUserUsesEntranceAsEmergencyExit"] = { "", Group::Slots, Widget::Integer };
-    m_intchars[charInts]["cAdultChange"] = { "", Group::Guests, Widget::Integer };
-    m_intchars[charInts]["cChildChange"] = { "", Group::Guests, Widget::Integer };
-    m_intchars[charInts]["cHungerChange"] = { "", Group::Guests, Widget::Integer };
-    m_intchars[charInts]["cThirstChange"] = { "", Group::Guests, Widget::Integer };
-    m_intchars[charInts]["cBathroomChange"] = { "", Group::Guests, Widget::Integer };
-    m_intchars[charInts]["cEnergyChange"] = { "", Group::Guests, Widget::Integer };
+    GrINI::SectionTemplate tmpl {
+        "Characteristics/Integers",
+        {
+            { "cCapacity", { "", Group::Slots, Widget::Integer } },
+            { "cToySatisfaction", { "", Group::Needs, Widget::Integer } },
+            { "cTimeInside", { "", Group::Slots, Widget::Integer } },
+            { "cHideUser", { "", Group::Slots, Widget::Switch } },
+            { "cSetLetterFacing", { "", Group::UI, Widget::Switch } },
+            { "cDrawUser", { "", Group::Slots, Widget::Switch } },
+            { "cHideCostChange", { "", Group::Commerce, Widget::Switch } },
+            { "cHideCommerceInfo", { "", Group::Commerce, Widget::Switch } },
+            { "cHideRegularInfo", { "", Group::Commerce, Widget::Switch } },
+            { "cHoldsOntoUser", { "", Group::Slots, Widget::Switch } },
+            { "cUserTracker", { "", Group::Slots, Widget::Switch } },
+            { "cIdler", { "", Group::Traits, Widget::Switch } },
+            { "cExhibitViewer", { "", Group::Exhibit, Widget::Switch } },
+            { "cAlternatePanelTitle", { "", Group::UI, Widget::Switch } },
+            { "cDirectEntrance", { "", Group::Slots, Widget::Switch } },
+            { "cHideBuilding", { "", Group::Slots, Widget::Switch } },
+            { "cUserStaysOutside", { "", Group::Slots, Widget::Switch } },
+            { "cUserTeleportsInside", { "", Group::Slots, Widget::Switch } },
+            { "cUserUsesExit", { "", Group::Slots, Widget::Switch } },
+            { "cUserUsesEntranceAsEmergencyExit", { "", Group::Slots, Widget::Switch } },
+            { "cAdultChange", { "", Group::Guests, Widget::Integer } },
+            { "cChildChange", { "", Group::Guests, Widget::Integer } },
+            { "cHungerChange", { "", Group::Guests, Widget::Integer } },
+            { "cThirstChange", { "", Group::Guests, Widget::Integer } },
+            { "cBathroomChange", { "", Group::Guests, Widget::Integer } },
+            { "cEnergyChange", { "", Group::Guests, Widget::Integer } }
+        }
+    };
+
+    GrINI::registerSubtypes(m_intchars, tmpl, subtypes());
+}
+
+void CBuilding::initCharFloats() {
+    GrINI::SectionTemplate tmpl {
+        "Characteristics/Floats",
+        {
+            { "cDefaultCost", { "", Group::Commerce, Widget::Float } },
+            { "cLowCost", { "", Group::Commerce, Widget::Float } },
+            { "cMedCost", { "", Group::Commerce, Widget::Float } },
+            { "cHighCost", { "", Group::Commerce, Widget::Float } },
+            { "cPriceFactor", { "", Group::Commerce, Widget::Float } },
+            { "cUpkeep", { "", Group::Commerce, Widget::Float } }
+        }
+    };
 }

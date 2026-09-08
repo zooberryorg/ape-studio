@@ -9,6 +9,7 @@
 #include "grgfx.h"
 #include "grshared.h"
 #include "SimpleIni.h"
+#include "grini.h"
 
 using AssetType = GrShared::AssetTypes;
 using Widget = GrShared::WidgetType;
@@ -23,6 +24,8 @@ public:
     virtual ~GrAsset() = default;
     virtual void load() = 0;
     virtual void save() = 0;
+    virtual GrShared::SubtypeList subtypes() const { return { { "", "" } }; };
+    virtual GrShared::Config allSections() = 0;;
     QString name() { return m_projectname; };
     void loadLayers();
     void initProjectName();
@@ -31,12 +34,12 @@ public:
     void setProjectId(const QString& id) { m_projectid = id; };
     QString getProjectName() { return m_projectname; };
     void setProjectName(const QString& name ) { m_projectname = name; };
-    QList<GrShared::Section*> allSections();
-    QHash<QString, Value> getAnimationPaths() { return m_animations[animations]; };
+    QHash<QString, Value> getAnimationPaths();
     QStringList graphicsPathBuilder();
     void graphicsLoader( const QString& rootPath );
     QHash<QString, GrGraphic*> getGraphics() { return m_frames; };
 
+    QHash<QString, Value> getAnimationPaths(const QString &subtypePrefix) const;
 protected:
     // constants
     QString charInts = "Characteristics/Integers";
@@ -65,19 +68,20 @@ protected:
 
     // files
     QString m_cpath; // path to main config file
-    GrShared::Section m_intchars; // uca, ucb, ucs, ai files
-    GrShared::Section m_globals; // uca, ucb, ucs, ai files
-    GrShared::Section m_animpaths; // uca, ucb, ucs, ai files
-    GrShared::Section m_icon; // uca, ucb, ucs, ai files
+    QHash<QString, GrShared::Section> m_intchars; // uca, ucb, ucs, ai files
+    QHash<QString, GrShared::Section> m_globals; // uca, ucb, ucs, ai files
+    QHash<QString, GrShared::Section> m_animpaths; // uca, ucb, ucs, ai files
+    QHash<QString, GrShared::Section> m_icon; // uca, ucb, ucs, ai files
     QStringList m_members; // uca, ucb, ucs, ai files
-    GrShared::Section m_strchars; // uca, ucb, ucs, ai files
-    GrShared::Section m_suitableobjects; // uca, ucb, ucs, ai files
-    GrShared::Section m_behaviorsets;
-    GrShared::Section m_ambientanims;
-    GrShared::Section m_defaultlcid;
-    GrShared::Section m_1033;
-    GrShared::Section m_animations;
-    GrShared::Section m_filtersounds;
+    QHash<QString, GrShared::Section> m_strchars; // uca, ucb, ucs, ai files
+    QHash<QString, GrShared::Section> m_suitableobjects; // uca, ucb, ucs, ai files
+    QHash<QString, GrShared::Section> m_behaviorsets;
+    QHash<QString, GrShared::Section> m_ambientanims;
+    QHash<QString, GrShared::Section> m_defaultlcid;
+    QHash<QString, GrShared::Section> m_1033;
+    QHash<QString, GrShared::Section> m_animations;
+    QHash<QString, GrShared::Section> m_filtersounds;
+    QHash<QString, GrShared::Section> m_floatchars;
 
     QHash<QString, QStringList> m_unlock;
     // for every key in allKeys, return its value (<key, value>, <key, value>, ..., n>)
