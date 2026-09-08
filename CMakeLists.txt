@@ -43,6 +43,8 @@ set(PROJECT_SOURCES
         ui/widgets/gridselector.h ui/widgets/gridselector.cpp
         ui/widgets/gridselectorpopup.h ui/widgets/gridselectorpopup.cpp
         ui/widgets/grcanvas.h ui/widgets/grcanvas.cpp
+        # config fields
+        ui/widgets/config/grconfigfield.h ui/widgets/config/grconfigfield.cpp
         # views (pages)
         ui/apew.h ui/apew.cpp ui/apew.ui
         ui/grwelcomescreen.h ui/grwelcomescreen.cpp
