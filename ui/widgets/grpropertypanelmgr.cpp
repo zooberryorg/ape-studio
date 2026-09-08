@@ -87,6 +87,7 @@ void GrPropertyPanelMgr::loadAsset(GrAsset *asset)
     m_currentAsset = asset;
 
     for ( GrShared::PropertyGroup g : populatedGroups ) {
+        // set group icon
         QIcon icon = groupIcons.contains(g)
             ? GrGfx::setSvgColor(groupIcons[g], QColor("#c2c6c0"), 50, 50)
             : QIcon();
