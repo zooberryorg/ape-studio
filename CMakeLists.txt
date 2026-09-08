@@ -45,6 +45,7 @@ set(PROJECT_SOURCES
         ui/widgets/grcanvas.h ui/widgets/grcanvas.cpp
         # config fields
         ui/widgets/config/grconfigfield.h ui/widgets/config/grconfigfield.cpp
+        ui/widgets/config/grconfiggroup.h ui/widgets/config/grconfiggroup.cpp
         # views (pages)
         ui/apew.h ui/apew.cpp ui/apew.ui
         ui/grwelcomescreen.h ui/grwelcomescreen.cpp
